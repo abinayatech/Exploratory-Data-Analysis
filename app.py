@@ -1,3 +1,8 @@
+import os
+import sys
+
+# Ensure current directory is in path for cloud deployment
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import streamlit as st
 import pandas as pd
@@ -7,7 +12,6 @@ import plotly.graph_objects as go
 from src.generator import generate_telecom_data
 from src.analyzer import ChurnAnalyzer
 from src.utils import get_csv_download_link
-import os
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -129,7 +133,10 @@ with st.sidebar:
     if st.button("🔄 Sync Live Data Feed", use_container_width=True):
         generate_telecom_data() # Force fresh data generation
         st.cache_data.clear()   # Wipe cache to force reload
-        st.rerun()
+        try:
+            st.rerun()
+        except AttributeError:
+            st.experimental_rerun()
 
 # --- MAIN CONTENT ---
 # Global mapping for cleaner display
